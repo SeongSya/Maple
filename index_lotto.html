@@ -15,8 +15,6 @@
             <div class="ball yellow    done">?</div>
             <div class="ball orange    done">?</div>
             <div class="ball pink      done">?</div>
-             <div class="plus">+</div>
-            <div class="ball bonus done">?</div> 
         </div>
         <button id="btn" class="">시작!</button>
     </div>
@@ -42,7 +40,7 @@ function decryptEffect(element, time) {
         element.classList.add("done");
         element.innerText = numbers[random];
         // numbers.splice(random, 1);
-    }, time * 5000 + 1000);
+    }, time * 2000 + 1000);
 }
 
 function lottery() {
