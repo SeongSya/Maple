@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<html>
+    <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>새콤 로또</title>
-    <link rel="stylesheet" href="./style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
 </head>
 
@@ -13,19 +14,19 @@
             <div class="ball blue      done">?</div>
             <div class="ball green     done">?</div>
             <div class="ball yellow    done">?</div>
-            <div class="ball orange    done">?</div>
-            <div class="ball pink      done">?</div>
         </div>
         <button id="btn" class="">시작!</button>
     </div>
-    <script src="./lotto.js"></script>
 
 
 
-</body><whale-quicksearch translate="no"></whale-quicksearch>
+</body>
 
+
+</html>
 <script>
-    let tmp = 1;
+
+let tmp = 1;
 let numbers;
 
 function decryptEffect(element, time) {
@@ -39,8 +40,8 @@ function decryptEffect(element, time) {
         clearInterval(effect);
         element.classList.add("done");
         element.innerText = numbers[random];
-        // numbers.splice(random, 1);
-    }, time * 3000 + 3000);
+         numbers.splice(random, 1);
+    }, time * 5000 + 5000);
 }
 
 function lottery() {
@@ -52,16 +53,15 @@ function lottery() {
 
 document.getElementById("btn").addEventListener("click", function () {
     if (tmp === 1) {
-        numbers = Array.from({ length: 3 }, (_, i) => i + 1);
+        numbers = Array.from({ length: 10 }, (_, i) => i + 1);
         tmp = 0;
         btn.classList.add("hide");
         lottery();
         setTimeout(function () {
             (tmp = 1), btn.classList.remove("hide");
-        }, 18000);
+        }, 20000);
     }
 });
-
 </script>
 <style>
     @font-face { font-family: 'BMJUA'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/BMJUA.woff') format('woff'); font-weight: normal; font-style: normal; }
@@ -212,4 +212,3 @@ body, div, button, h1 {
 }
 
 </style>
-</html>
