@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>새콤달콤</title>
+    <style>
+        body {font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;display: flex;justify-content: center;align-items: center;min-height: 100vh;background-color: #f4f7f6;margin: 0;}
+        .container {background: white;padding: 30px;border-radius: 10px;box-shadow: 0 4px 15px rgba(0,0,0,0.1);width: 90%;max-width: 500px;text-align: center;}
+        h1 {color: #333;margin-bottom: 20px;}
+        textarea {width: calc(100% - 20px);height: 100px;padding: 10px;border: 1px solid #ddd;border-radius: 5px;margin-bottom: 15px;font-size: 1em;}
+        .controls {margin-bottom: 20px;}
+        label {margin-right: 10px;}
+        input[type="number"] {width: 60px;padding: 5px;text-align: center;border: 1px solid #ddd;border-radius: 5px;}
+        button {width: 100%;padding: 12px;font-size: 1.2em;font-weight: bold;color: white;background-color: #007bff;border: none;border-radius: 5px;cursor: pointer;transition: background-color 0.3s;}
+        button:hover {background-color: #0056b3;}
+        button:disabled {background-color: #aaa;cursor: not-allowed;}
+        #results {margin-top: 20px;}
+        #winners {list-style-type: none;padding: 0;}
+        #winners li {background-color: #e9f5ff;margin: 5px 0;padding: 10px;border-radius: 5px;font-size: 1.1em;font-weight: bold;}
+        #slot-container {margin-top: 20px;}
+        #slot-display {font-size: 2.5em;font-weight: bold;color: #007bff;padding: 20px;border: 3px dashed #007bff;background-color: #f0f8ff;text-align: center;min-height: 60px;line-height: 60px;margin: 15px 0;border-radius: 10px;}
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>추첨기</h1>
+        <textarea id="names" placeholder=" "></textarea>
+        
+        <div class="controls">
+            <label for="count">추첨할 인원 수:</label>
+            <input type="number" id="count" value="1" min="1">
+        </div>
+        
+        <button id="drawButton">추첨 시작</button>
+
+        <div id="slot-container" style="display: none;">
+             <div id="slot-display"></div>
+        </div>
+        
+        <div id="results" style="display: none;">
+            <h2>추첨 결과</h2>
+            <ul id="winners"></ul>
+        </div>
+    </div>
+
+    <script>
+        const drawButton = document.getElementById('drawButton');
+        const namesTextarea = document.getElementById('names');
+        const countInput = document.getElementById('count');
+        const resultsDiv = document.getElementById('results');
+        const winnersUl = document.getElementById('winners');
+        const slotContainer = document.getElementById('slot-container');
+        const slotDisplay = document.getElementById('slot-display');
+        function runSlotAnimation(displayElement, namePool, finalWinner) {
+            return new Promise(resolve => {
+                const animationDuration = 2500; 
+                const intervalTime = 75;      
+                displayElement.textContent = ''; 
+                const animationInterval = setInterval(() => {
+                    const randomIndex = Math.floor(Math.random() * namePool.length);
+                    displayElement.textContent = namePool[randomIndex];
+                }, intervalTime);
+                setTimeout(() => {
+                    clearInterval(animationInterval);
+                    displayElement.textContent = `🎉 ${finalWinner} 🎉`;
+                    resolve(); 
+                }, animationDuration);
+            });
+        }
+
+        
+        drawButton.addEventListener('click', async () => {
+            const namesString = namesTextarea.value;
+            const namesArray = namesString.split(',').map(name => name.trim()).filter(name => name !== '');
+            const count = parseInt(countInput.value, 10);
+            if (namesArray.length === 0) {
+                alert('추첨할 이름을 입력해주세요.');
+                return;
+            }
+            if (isNaN(count) || count <= 0) {
+                alert('추첨할 인원 수는 1 이상이어야 합니다.');
+                return;
+            }
+            if (count > namesArray.length) {
+                alert('추첨할 인원 수가 전체 인원 수보다 많을 수 없습니다.');
+                return;
+            }
+            drawButton.disabled = true; 
+            resultsDiv.style.display = 'block';
+            slotContainer.style.display = 'block'; 
+            winnersUl.innerHTML = ''; 
+            const shuffled = [...namesArray]; 
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]; 
+            }
+            const winnersToDraw = shuffled.slice(0, count);
+            for (const winner of winnersToDraw) {
+                slotDisplay.textContent = '추첨 중...';
+                await runSlotAnimation(slotDisplay, namesArray, winner);
+                await new Promise(resolve => setTimeout(resolve, 500));
+                const li = document.createElement('li');
+                li.textContent = winner;
+                winnersUl.appendChild(li);
+            }
+            slotDisplay.textContent = '추첨 완료!';
+            drawButton.disabled = false; 
+        });
+    </script>
+
+</body>
+</html>
