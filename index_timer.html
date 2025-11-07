@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #1a1a1a;
+            color: #e0e0e0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        .card {
+            background-color: #2a2a2a;
+            border-radius: 5px;
+            padding: 40px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .input-group {
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #b0b0b0;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            background-color: #333;
+            border: 1px solid #444;
+            border-radius: 5px;
+            color: #e0e0e0;
+            font-size: 18px;
+            text-align: center;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #0d7bff;
+        }
+
+        input[type="text"]::placeholder {
+            color: #666;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background-color: #0d7bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #0a66d9;
+        }
+
+        button:active {
+            background-color: #0854b3;
+        }
+
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #333;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .result.show {
+            display: block;
+        }
+
+        .time-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background-color: #2a2a2a;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .time-label {
+            font-size: 16px;
+            color: #b0b0b0;
+        }
+
+        .time-value {
+            font-size: 20px;
+            font-weight: 600;
+            color: #0d7bff;
+        }
+
+        @media (max-width: 600px) {
+            .card {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .result-text {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>Time Calculator</h1>
+
+            <div class="input-group">
+                <label for="timeInput">Start Time</label>
+                <input type="text" id="timeInput" placeholder="14:30">
+            </div>
+
+            <button onclick="calculateTime()">Calculate</button>
+
+            <div class="result" id="result"></div>
+        </div>
+    </div>
+
+    <script>
+        function calculateTime() {
+            const timeInput = document.getElementById('timeInput').value.trim();
+            const resultDiv = document.getElementById('result');
+
+            if (!timeInput) {
+                resultDiv.innerHTML = '<div class="time-item"><div class="time-label">Please enter a time</div></div>';
+                resultDiv.classList.add('show');
+                return;
+            }
+
+            const timeRegex = /^([0-1]?[0-9]|2[0-3]):([0-5][0-9])$/;
+            if (!timeRegex.test(timeInput)) {
+                resultDiv.innerHTML = '<div class="time-item"><div class="time-label">Invalid format. Use HH:MM (e.g., 14:30)</div></div>';
+                resultDiv.classList.add('show');
+                return;
+            }
+
+            const [hours, minutes] = timeInput.split(':').map(Number);
+            const intervals = [15, 15, 15, 15, 30, 30, 60];
+            const labels = ['+15 min', '+30 min', '+45 min', '+1 hr', '+1 hr 30 min', '+2 hr', '+3 hr'];
+
+            let html = '';
+            let totalMinutes = 0;
+
+            intervals.forEach((interval, index) => {
+                totalMinutes += interval;
+                const date = new Date();
+                date.setHours(hours);
+                date.setMinutes(minutes + totalMinutes);
+
+                const resultHours = String(date.getHours()).padStart(2, '0');
+                const resultMinutes = String(date.getMinutes()).padStart(2, '0');
+
+                html += `
+                    <div class="time-item">
+                        <div class="time-label">${labels[index]}</div>
+                        <div class="time-value">${resultHours}:${resultMinutes}</div>
+                    </div>
+                `;
+            });
+
+            resultDiv.innerHTML = html;
+            resultDiv.classList.add('show');
+        }
+
+        document.getElementById('timeInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                calculateTime();
+            }
+        });
+    </script>
+</body>
+</html>
