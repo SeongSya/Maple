@@ -45,6 +45,20 @@
             margin-bottom: 30px;
         }
 
+        .input-row {
+            display: flex;
+            gap: 15px;
+            align-items: flex-end;
+        }
+
+        .input-col {
+            flex: 7;
+        }
+
+        .input-col.btn-col {
+            flex: 3;
+        }
+
         label {
             display: block;
             margin-bottom: 10px;
@@ -59,8 +73,10 @@
             border: 1px solid #444;
             border-radius: 5px;
             color: #e0e0e0;
-            font-size: 18px;
+            font-size: 16px;
             text-align: center;
+            box-sizing: border-box;
+            height: 50px;
         }
 
         input[type="text"]:focus {
@@ -90,6 +106,23 @@
         }
 
         button:active {
+            background-color: #0854b3;
+        }
+
+        .current-time-btn {
+            width: 100%;
+            padding: 15px;
+            background-color: #0d7bff;
+            font-size: 16px;
+            height: 50px;
+            box-sizing: border-box;
+        }
+
+        .current-time-btn:hover {
+            background-color: #0a66d9;
+        }
+
+        .current-time-btn:active {
             background-color: #0854b3;
         }
 
@@ -138,6 +171,11 @@
             .result-text {
                 font-size: 20px;
             }
+
+            .input-row {
+                flex-direction: column;
+                gap: 20px;
+            }
         }
     </style>
 </head>
@@ -147,8 +185,16 @@
             <h1>Time Calculator</h1>
 
             <div class="input-group">
-                <label for="timeInput">Start Time</label>
-                <input type="text" id="timeInput" placeholder="14:30">
+                <div class="input-row">
+                    <div class="input-col">
+                        <label for="timeInput">Start Time</label>
+                        <input type="text" id="timeInput" placeholder="14:30">
+                    </div>
+                    <div class="input-col btn-col">
+                        <label style="opacity: 0;">Spacer</label>
+                        <button class="current-time-btn" onclick="setCurrentTime()">Current</button>
+                    </div>
+                </div>
             </div>
 
             <button onclick="calculateTime()">Calculate</button>
@@ -158,6 +204,13 @@
     </div>
 
     <script>
+        function setCurrentTime() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('timeInput').value = `${hours}:${minutes}`;
+        }
+
         function calculateTime() {
             const timeInput = document.getElementById('timeInput').value.trim();
             const resultDiv = document.getElementById('result');
